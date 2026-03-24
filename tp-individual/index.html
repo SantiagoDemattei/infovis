@@ -1,127 +1,417 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lo que pasa mientras duermo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 40px 20px;
+    :root {
+      --cream:      #f7f4ef;
+      --cream2:     #eeeae2;
+      --white:      #ffffff;
+      --ink:        #1a1714;
+      --ink-mid:    #3d3830;
+      --ink-light:  #7a7267;
+      --indigo:     #3b4fa8;
+      --indigo-lt:  #e8ebf7;
+      --rust:       #c0552a;
+      --border:     rgba(26,23,20,0.1);
+      --shadow:     rgba(26,23,20,0.08);
     }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── Back link ─── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-light);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 28px 40px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--indigo); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* ─── Hero ─── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: end;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--rust);
+      font-weight: 500;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-label::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 40px;
+      background: var(--rust);
+    }
+
     h1 {
-      font-size: 2em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--ink);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.1s forwards;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--indigo);
+    }
+
+    .hero-meta {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      opacity: 0;
+      animation: fadeUp 0.9s 0.35s forwards;
+    }
+
+    .hero-right {
+      padding-bottom: 8px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.5s forwards;
+    }
+
+    .hero-intro {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--ink-mid);
+      border-left: 3px solid var(--indigo);
+      padding-left: 20px;
+    }
+
+    /* ─── Main layout ─── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 100px;
+    }
+
+    /* ─── Section ─── */
+    .viz-section {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .viz-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0 32px;
+      margin-bottom: 36px;
+      align-items: start;
+    }
+
+    .section-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      font-weight: 600;
+      line-height: 1;
+      -webkit-text-stroke: 1.5px rgba(26,23,20,0.15);
+      color: transparent;
+      user-select: none;
+      padding-top: 4px;
+    }
+
+    .section-meta {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--indigo);
+      font-weight: 500;
       margin-bottom: 10px;
     }
-    .subtitle {
-      color: #666;
-      font-size: 1.1em;
-      margin-bottom: 30px;
-      margin-top: 0;
+
+    .viz-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 14px;
     }
-    .visualization {
-      margin: 40px 0;
-      padding: 30px 0;
-      border-top: 1px solid #eee;
+
+    .viz-section h2 em {
+      font-style: italic;
+      color: var(--indigo);
     }
-    .visualization:first-of-type {
-      border-top: none;
-      padding-top: 0;
+
+    .description {
+      font-size: 0.93rem;
+      color: var(--ink-light);
+      max-width: 620px;
+      line-height: 1.8;
     }
-    h2 {
-      font-size: 1.3em;
-      margin: 0 0 20px 0;
-      color: #333;
+
+    /* ─── Chart card ─── */
+    .chart-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+      box-shadow: 0 2px 12px var(--shadow), 0 8px 32px var(--shadow);
+      margin-top: 32px;
+      overflow: hidden;
+      position: relative;
     }
+    .chart-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--indigo), transparent);
+    }
+
     .svg-embed {
       width: 100%;
       height: auto;
       display: block;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      background: #fff;
     }
-    a.back {
+
+    /* ─── Footer ─── */
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer p {
+      font-size: 0.82rem;
+      color: var(--ink-light);
+      letter-spacing: 0.04em;
+    }
+
+    footer strong { color: var(--ink-mid); font-weight: 500; }
+
+    footer .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--rust);
       display: inline-block;
-      margin-bottom: 30px;
-      color: #0066cc;
-      text-decoration: none;
+      vertical-align: middle;
+      margin: 0 8px;
     }
-    a.back:hover {
-      text-decoration: underline;
+
+    /* ─── Animations ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+      main { padding: 0 20px 80px; }
+      .back-link { padding: 20px; }
+      .section-header { grid-template-columns: 1fr; }
+      .section-num { display: none; }
+      footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <a href="../" class="back">← Volver</a>
-  
-  <h1>Lo que pasa mientras duermo</h1>
-  <p class="subtitle">Exploración visual de datos personales sobre patrones de sueño</p>
-  
-  <div class="visualization">
-    <h2>¿Dormir más horas garantiza más sueño profundo?</h2>
-    <div class="flourish-embed flourish-chart" data-src="visualisation/28159976">
-    <script src="https://public.flourish.studio/resources/embed.js"></script>
-    <noscript>
-        <img src="https://public.flourish.studio/visualisation/28159976/thumbnail" width="100%" alt="visualization" />
-    </noscript>
-    </div>
-  </div>
 
-  <div class="visualization">
-    <h2>¿Mi corazón realmente descansa por la noche?</h2>
-    <div style="min-height:360px" id="datawrapper-vis-lI6SL">
-      <script type="text/javascript" defer src="https://datawrapper.dwcdn.net/lI6SL/embed.js" charset="utf-8" data-target="#datawrapper-vis-lI6SL"></script>
-      <noscript>
-        <img src="https://datawrapper.dwcdn.net/lI6SL/full.png" alt="Line chart" />
-      </noscript>
-    </div>
-  </div>
+  <a href="../" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Volver
+  </a>
 
-  <div class="visualization">
-    <h2>¿Siempre duermo de la misma manera o cada noche es distinta?</h2>
-    <img src="stacked_bar_chart.svg" class="svg-embed">
-  </div>
-
-  <div class="visualization">
-    <h2>¿Cómo se construye mi sueño?</h2>
-    <div class='tableauPlaceholder' id='viz1774366698419' style='position: relative'>
-      <noscript>
-        <a href='#'>
-          <img alt='Hoja 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Hi&#47;Hipnograma&#47;Hoja1&#47;1_rss.png' style='border: none' />
-        </a>
-      </noscript>
-      <object class='tableauViz' style='display:none;'>
-        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-        <param name='embed_code_version' value='3' />
-        <param name='site_root' value='' />
-        <param name='name' value='Hipnograma&#47;Hoja1' />
-        <param name='tabs' value='no' />
-        <param name='toolbar' value='yes' />
-        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Hi&#47;Hipnograma&#47;Hoja1&#47;1.png' />
-        <param name='animate_transition' value='yes' />
-        <param name='display_static_image' value='yes' />
-        <param name='display_spinner' value='yes' />
-        <param name='display_overlay' value='yes' />
-        <param name='display_count' value='yes' />
-        <param name='language' value='es-ES' />
-        <param name='filter' value='publish=yes' />
-      </object>
+  <!-- ─── Hero ─── -->
+  <header class="hero">
+    <div class="hero-left">
+      <div class="hero-label">Datos personales</div>
+      <h1>Lo que pasa<br><em>mientras</em><br>duermo</h1>
+      <p class="hero-meta">Visualización de datos · ECD 2025 A</p>
     </div>
-    <script type='text/javascript'>
-      var divElement = document.getElementById('viz1774366698419');
-      var vizElement = divElement.getElementsByTagName('object')[0];
-      vizElement.style.width = '100%';
-      vizElement.style.height = (divElement.offsetWidth * 0.75) + 'px';
-      var scriptElement = document.createElement('script');
-      scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-      vizElement.parentNode.insertBefore(scriptElement, vizElement);
-    </script>
-  </div>
+    <div class="hero-right">
+      <p class="hero-intro">
+        Durante varias semanas registré mis patrones de sueño con un reloj inteligente. Estas cuatro visualizaciones exploran lo que ocurre cada noche: cuánto duermo, qué tan profundo es ese sueño, cómo reacciona mi corazón y cómo se construye cada ciclo.
+      </p>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 01 -->
+    <article class="viz-section" id="s1">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div>
+          <div class="section-meta">Sueño profundo</div>
+          <h2>¿Dormir más horas garantiza <em>más sueño profundo?</em></h2>
+          <p class="description">
+            Cada punto es una noche, coloreado según el día de la semana. El eje horizontal muestra las horas totales dormidas y el vertical las horas en etapa profunda medidas por el reloj. Una correlación positiva existe, pero con bastante dispersión: dormir más no siempre garantiza mayor profundidad.
+          </p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="flourish-embed flourish-chart" data-src="visualisation/28159976">
+          <script src="https://public.flourish.studio/resources/embed.js"></script>
+          <noscript>
+            <img src="https://public.flourish.studio/visualisation/28159976/thumbnail" width="100%" alt="Scatter plot sueño profundo vs horas totales" />
+          </noscript>
+        </div>
+      </div>
+    </article>
+
+    <!-- 02 -->
+    <article class="viz-section" id="s2">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div>
+          <div class="section-meta">Frecuencia cardíaca</div>
+          <h2>¿Mi corazón realmente <em>descansa por la noche?</em></h2>
+          <p class="description">
+            Tres líneas muestran el máximo, promedio y mínimo de la frecuencia cardíaca registrada cada noche. Los picos anotados revelan noches atípicas —una salida con amigos o una noche sintiéndome enfermo— donde el corazón trabajó notablemente más de lo habitual.
+          </p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div style="min-height:360px" id="datawrapper-vis-lI6SL">
+          <script type="text/javascript" defer src="https://datawrapper.dwcdn.net/lI6SL/embed.js" charset="utf-8" data-target="#datawrapper-vis-lI6SL"></script>
+          <noscript>
+            <img src="https://datawrapper.dwcdn.net/lI6SL/full.png" alt="Line chart frecuencia cardíaca nocturna" />
+          </noscript>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 -->
+    <article class="viz-section" id="s3">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div>
+          <div class="section-meta">Composición nocturna</div>
+          <h2>¿Siempre duermo de la misma manera, <em>o cada noche es distinta?</em></h2>
+          <p class="description">
+            Barras apiladas con los minutos de cada etapa por noche: de abajo hacia arriba, sueño Profundo, REM, Ligero y tiempo Despierto. La altura total refleja las horas dormidas; los colores interiores muestran si esa noche fue equilibrada o dominada por una sola etapa.
+          </p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <img src="stacked_bar_chart.svg" class="svg-embed" alt="Stacked bar chart etapas de sueño por noche">
+      </div>
+    </article>
+
+    <!-- 04 -->
+    <article class="viz-section" id="s4">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div>
+          <div class="section-meta">Hipnograma</div>
+          <h2>¿Cómo se <em>construye</em> mi sueño noche a noche?</h2>
+          <p class="description">
+            Un hipnograma horizontal donde cada fila es una noche. El eje horizontal muestra el progreso de 0% a 100% de la duración total, y los bloques revelan la etapa activa en cada momento: Profundo, REM, Ligero o Despierto. Permite comparar los ciclos internos de distintas noches de un solo vistazo.
+          </p>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="tableauPlaceholder" id="viz1774366698419" style="position:relative">
+          <noscript>
+            <a href="#">
+              <img alt="Hipnograma" src="https://public.tableau.com/static/images/Hi/Hipnograma/Hoja1/1_rss.png" style="border:none;width:100%;" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url"             value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version"   value="3" />
+            <param name="site_root"            value="" />
+            <param name="name"                 value="Hipnograma&#47;Hoja1" />
+            <param name="tabs"                 value="no" />
+            <param name="toolbar"              value="yes" />
+            <param name="static_image"         value="https://public.tableau.com/static/images/Hi/Hipnograma/Hoja1/1.png" />
+            <param name="animate_transition"   value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner"      value="yes" />
+            <param name="display_overlay"      value="yes" />
+            <param name="display_count"        value="yes" />
+            <param name="language"             value="es-ES" />
+            <param name="filter"               value="publish=yes" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement  = document.getElementById('viz1774366698419');
+          var vizElement  = divElement.getElementsByTagName('object')[0];
+          vizElement.style.width  = '100%';
+          vizElement.style.height = (divElement.offsetWidth * 0.75) + 'px';
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <p><strong>ECD 2025 A</strong> <span class="dot"></span> Visualización de Datos Personales</p>
+    <p>Datos registrados con reloj inteligente · 2026</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.viz-section').forEach(s => observer.observe(s));
+  </script>
 
 </body>
 </html>
