@@ -123,6 +123,45 @@
           <rect x="691.8570471083875" y="16.800000000000015" width="25.57281692837993" height="1.0181818181818016"/>
           <rect x="718.4285235541937" y="142.03636363636357" width="25.57281692837993" height="0"/>
         </g>
+        <g id="referenceBand">
+          <!-- Banda 7–9 h -->
+          <rect
+            x="0"
+            y="101.81818181818178"
+            width="745"
+            height="101.81818181818187"
+            opacity="0"
+          />
+          <!-- Línea 9 h -->
+          <line
+            x1="0"
+            y1="101.81818181818178"
+            x2="745"
+            y2="101.81818181818178"
+            stroke="#6aa56a"
+            stroke-width="1.5"
+            stroke-dasharray="4,3"
+          />
+          <!-- Línea 7 h -->
+          <line
+            x1="0"
+            y1="203.63636363636365"
+            x2="745"
+            y2="203.63636363636365"
+            stroke="#6aa56a"
+            stroke-width="1.5"
+            stroke-dasharray="4,3"
+          />
+          <!-- Etiqueta -->
+          <text
+            x="740"
+            y="115"
+            text-anchor="end"
+            style="font-family: Arial, sans-serif; font-size: 11px; fill: #4f7f4f; font-weight: bold;"
+          >
+            Rango recomendado (7–9 h)
+          </text>
+        </g>
         <g id="xAxis" transform="translate(0,560)" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle">
           <path class="domain" stroke="currentColor" d="M0,0H745"/>
           <g class="tick" opacity="1" transform="translate(13.785067981616255,0)">
